@@ -124,7 +124,14 @@ public:
 	~ODMAS() {
 		delete[] mas;
 	}
+friend void mult(ODMAS & m, int k);
 };
+
+void mult(ODMAS & m, int k) {
+	for (int i = 0; i < x.N; i++){
+		x.mas[i] = x.mas[i] * k;  // то есть можно образаться к элементам класса через точку, необязательно писать ф-цию elem
+	}
+}
 
 int main() {
 	setlocale(LC_ALL, "ru");
