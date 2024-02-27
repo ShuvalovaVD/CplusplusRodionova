@@ -1,4 +1,4 @@
-// Введение в ООП
+// Лекция 1. Описание класса
 #include <iostream>
 #include <math.h>
 #include <algorithm>
