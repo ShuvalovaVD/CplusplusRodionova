@@ -83,6 +83,7 @@ public:
 	}
 	friend int search(MASS_RANDOM& matrix);
 	friend int poisk(MASS_RANDOM& matrix);
+	friend void operator+(MASS_RANDOM& matrix1, MASS_RANDOM& matrix2);
 };
 
 int search(MASS_RANDOM& matrix) {  // ищем значение минимума
@@ -113,6 +114,15 @@ int poisk(MASS_RANDOM& matrix) {  // кол-во элем до max
 	// теперь считаем кол-во элем до него
 	int cnt = mx_i * matrix.M + mx_j;
 	return cnt;
+}
+
+void operator+(MASS_RANDOM& matrix1, MASS_RANDOM& matrix2) {
+	// предполагается, что складываются матрицы одинаковых размеров
+	for (int i = 0; i < matrix1.N; ++i) {
+		for (int j = 0; j < matrix1.M; ++j) {
+			matrix1.massiv[i][j] += matrix2.massiv[i][j];
+		}
+	}
 }
 
 
@@ -152,6 +162,15 @@ int main() {
 	cout << "Удаление столбца 2:\n";
 	matrix3.delete_col(2);
 	matrix3.print();
+
+	MASS_RANDOM matrix4(3, 5, 10), matrix5(3, 5, 20);
+	cout << "Матрица 4\n";
+	matrix4.print();
+	cout << "Матрица 5\n";
+	matrix5.print();
+	cout << "Сложение матрицы 4 и матрицы 5:\n";
+	matrix4 + matrix5;  // результат сложения изменяет матрицу 4
+	matrix4.print();
 
 	return 0;
 }
