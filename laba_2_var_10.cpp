@@ -79,6 +79,7 @@ public:
 		delete[] mas;
 	}
 	friend int search(INTMAS& m);
+	friend void operator+(INTMAS& m1, INTMAS& m2);
 };
 
 int search(INTMAS& m) {
@@ -89,6 +90,14 @@ int search(INTMAS& m) {
 		}
 	}
 	return cnt;
+}
+
+
+void operator+(INTMAS& m1, INTMAS& m2) {
+	// предполагается, что размеры массивов одинаковые
+	for (int i = 0; i < m1.N; ++i) {
+		m1.mas[i] += m2.mas[i];
+	}
 }
 
 
@@ -136,6 +145,16 @@ int main() {
 	cout << "Кол-во элем < 50:\n";
 	cout << search(m3) << "\n";
 
+	cout << "\n";
+
+	INTMAS m4(5, 100), m5(5, 50);
+	cout << "Объект 4:\n";
+	m4.myprint();
+	cout << "Объект 5:\n";
+	m5.myprint();
+	cout << "Сумма массива 4 и массива 5:\n";
+	m4 + m5;  // результат сложения изменяет массив m4
+	m4.myprint();
 
 	system("pause");
 	return 0;
