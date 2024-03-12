@@ -65,10 +65,11 @@ public:
 	}
 	friend bool ort(KOD_CHET& v1, KOD_CHET& v2);
 	friend int decod(KOD_CHET& v);
+	friend void operator+(KOD_CHET& v1, KOD_CHET& v2);
 };
 
 
-bool ort(KOD_CHET & v1, KOD_CHET & v2) {
+bool ort(KOD_CHET& v1, KOD_CHET& v2) {
 	// два вектора ортогональны, если их скалярное произведение равно 0
 	// скалярное произведение: x1*x2 + y1*y2 + z1*z2
 	int skal_mult = 0;
@@ -93,12 +94,20 @@ int decod(KOD_CHET& v) {
 }
 
 
+void operator+(KOD_CHET& v1, KOD_CHET& v2) {  // сложение двух векторов
+	// предполагается, что размер одинаковый
+	for (int i = 0; i < v1.N; ++i) {
+		v1.pvect[i] += v2.pvect[i];
+	}
+}
+
+
 int main() {
 	setlocale(LC_ALL, "ru");
 	srand((unsigned)time(NULL));
 
 	KOD_CHET v1(8), v2(8), v3(5), v4(5);
-	
+
 	cout << "Создание объектов:\n";
 	cout << "Объект 1:\n";
 	v1.print();
@@ -122,7 +131,7 @@ int main() {
 	cout << v4_10 << "\n";
 
 	cout << "\n";
-	
+
 	cout << "Проверка на ортогональность двух векторов:\n";
 	cout << "Векторы 1 и 2:\n";
 	string ans_1_2 = ort(v1, v2) == true ? "да" : "нет";
@@ -130,7 +139,7 @@ int main() {
 	cout << "Векторы 3 и 4:\n";
 	string ans_3_4 = ort(v3, v4) == true ? "да" : "нет";
 	cout << ans_3_4 << "\n";
-	
+
 	cout << "\n";
 
 	cout << "Инвертирование векторов:\n";
@@ -146,6 +155,16 @@ int main() {
 	cout << "Вектор 4:\n";
 	v4.invert();
 	v4.print();
+
+	cout << "\n";
+
+	cout << "Сложение векторов:\n";
+	cout << "Вектор 1 + вектор 2:\n";
+	v1 + v2;  // результат сложения изменяет вектор v1
+	v1.print();
+	cout << "Вектор 3 + вектор 4:\n";
+	v3 + v4;  // результат сложения изменяет вектор v3
+	v3.print();
 
 	return 0;
 }
