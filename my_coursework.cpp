@@ -115,9 +115,9 @@ Matrix get_matrix() {
 	cin >> columns;
 	Matrix matrix = Matrix(rows, columns);  // пока сгенерируем рандомную матрицу указанных размеров
 	cout << "Сгенерировать рандомную матрицу указанных размеров (1) или задать вручную (2)? (1/2):\n";
-	string answer;
+	int answer;
 	cin >> answer;
-	if (answer == "1") {
+	if (answer == 1) {
 		cout << "Сгенерированная матрица:\n";
 		matrix.show();
 		return matrix;
@@ -186,9 +186,9 @@ int main() {
 	cout << "Программная реализация матричных операций\n\n";
 	while (true) {
 		show_options_menu();
-		string answer;
+		int answer;
 		cin >> answer;
-		if (answer == "1") {
+		if (answer == 1) {
 			Matrix matrix = get_matrix();
 			cout << "Введите число: ";
 			int number;
@@ -197,13 +197,13 @@ int main() {
 			cout << "Итоговая матрица:\n";
 			matrix.show();
 		}
-		else if (answer == "2") {
+		else if (answer == 2) {
 			Matrix matrix = get_matrix();
 			Matrix transponed_matrix = transpone_matrix(matrix);
 			cout << "Транспонированная матрица:\n";
 			transponed_matrix.show();
 		}
-		else if (answer == "3") {
+		else if (answer == 3) {
 			Matrix matrix = get_matrix();
 			bool flag_verdict = matrix.check_symmetry();
 			if (flag_verdict) {
@@ -213,7 +213,7 @@ int main() {
 				cout << "Матрица несимметрична\n";
 			}
 		}
-		else if (answer == "4") {
+		else if (answer == 4) {
 			cout << "Первая матрица:\n";
 			Matrix matrix_1 = get_matrix();
 			cout << "Вторая матрица:\n";
@@ -227,7 +227,7 @@ int main() {
 				cout << "Сложение матриц не определено\n";
 			}
 		}
-		else if (answer == "5") {
+		else if (answer == 5) {
 			cout << "Первая матрица:\n";
 			Matrix matrix_1 = get_matrix();
 			cout << "Вторая матрица:\n";
@@ -241,7 +241,7 @@ int main() {
 				cout << "Вычитание матриц не определено\n";
 			}
 		}
-		else if (answer == "6") {
+		else if (answer == 6) {
 			cout << "Первая матрица:\n";
 			Matrix matrix_1 = get_matrix();
 			cout << "Вторая матрица:\n";
@@ -255,7 +255,7 @@ int main() {
 				cout << "Умножение матриц не определено\n";
 			}
 		}
-		else {
+		else {  // answer == 7
 			cout << "\n";
 			break;
 		}
