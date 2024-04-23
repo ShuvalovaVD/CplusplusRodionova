@@ -51,6 +51,13 @@ public:
 		return true;
 	}
 
+	int check_square() {
+		if (rows != columns) {
+			return -1;
+		}
+		return rows;
+	}
+
 	void add_matrix(Matrix other_matrix) {  // предполагается, что сложение матриц определено
 		for (int i = 0; i < rows; ++i) {
 			for (int j = 0; j < columns; ++j) {
@@ -90,8 +97,10 @@ public:
 	// дружественные функции, к-рые имеют доступ к размерам rows и columns
 	friend bool check_addition_of_matrices(Matrix& matrix_1, Matrix& matrix_2);
 	friend bool check_multiplication_of_matrices(Matrix& matrix_1, Matrix& matrix_2);
-	// дружественная функция, к-рая имеет доступ к размерам rows и columns, а также к массиву matrix
+	// дружественные функции, к-рые имеют доступ к размерам rows и columns, а также к массиву matrix
 	friend Matrix multiply_matrices(Matrix& matrix_1, Matrix& matrix_2);
+	friend void put_if_file_matrix_result(Matrix& matrix);
+	friend int** create_array(Matrix matrix);
 };
 
 
@@ -104,7 +113,8 @@ void show_options_menu() {
 	cout << "5. Сложение двух матриц\n";
 	cout << "6. Вычитание двух матриц\n";
 	cout << "7. Умножение двух матриц\n";
-	cout << "8. Выход\n\n";
+	cout << "8. Найти определитель матрицы\n";
+	cout << "9. Выход\n\n";
 }
 
 
@@ -137,6 +147,18 @@ Matrix get_matrix() {
 	}
 	input_file.close();
 	return matrix;
+}
+
+
+void put_if_file_matrix_result(Matrix& matrix) {
+	ofstream output_file("output.txt");
+	for (int i = 0; i < matrix.rows; ++i) {
+		for (int j = 0; j < matrix.columns; ++j) {
+			output_file << setw(4) << matrix.matrix[i][j];
+		}
+		output_file << "\n";
+	}
+	output_file.close();
 }
 
 
@@ -186,6 +208,49 @@ Matrix multiply_matrices(Matrix& matrix_1, Matrix& matrix_2) {  // предпо�
 }
 
 
+int** create_array(Matrix matrix) {
+	int n = matrix.rows;
+	int** a = new int* [n];
+	for (int i = 0; i < n; i++) {
+		a[i] = new int[n];
+	}
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			a[i][j] = matrix.matrix[i][j]; // заполняем элементами матрицы matrix
+		}
+	}
+	return a;
+}
+
+
+int find_determinant(int** a, int n) { // рекурсивная функция вычисления определителя матрицы; предполагается, что матрица квадратная
+	if (n == 1)
+		return a[0][0];
+	else if (n == 2)
+		return a[0][0] * a[1][1] - a[0][1] * a[1][0];
+	else {
+		int d = 0;
+		for (int k = 0; k < n; k++) {
+			int** m = new int* [n - 1];
+			for (int i = 0; i < n - 1; i++) {
+				m[i] = new int[n - 1];
+			}
+			for (int i = 1; i < n; i++) {
+				int t = 0;
+				for (int j = 0; j < n; j++) {
+					if (j == k)
+						continue;
+					m[i - 1][t] = a[i][j];
+					t++;
+				}
+			}
+			d += pow(-1, k + 2) * a[0][k] * find_determinant(m, n - 1);
+		}
+		return d;
+	}
+}
+
+
 int main() {
 	setlocale(LC_ALL, "ru");
 	srand((unsigned)time(NULL));
@@ -206,11 +271,13 @@ int main() {
 			matrix.multiply_by_number(number);
 			cout << "Итоговая матрица:\n";
 			matrix.show();
+			put_if_file_matrix_result(matrix);
 		}
 		else if (answer == "3") {
 			matrix = transpone_matrix(matrix);
 			cout << "Транспонированная матрица:\n";
 			matrix.show();
+			put_if_file_matrix_result(matrix);
 		}
 		else if (answer == "4") {
 			if (matrix.check_symmetry()) {
@@ -227,6 +294,7 @@ int main() {
 				matrix.add_matrix(matrix_other);
 				cout << "Итоговая матрица:\n";
 				matrix.show();
+				put_if_file_matrix_result(matrix);
 			}
 			else {
 				cout << "Сложение матриц не определено\n";
@@ -239,6 +307,7 @@ int main() {
 				matrix.subtract_matrix(matrix_other);
 				cout << "Итоговая матрица:\n";
 				matrix.show();
+				put_if_file_matrix_result(matrix);
 			}
 			else {
 				cout << "Вычитание матриц не определено\n";
@@ -248,15 +317,27 @@ int main() {
 			cout << "Введите ещё одну матрицу:\n";
 			Matrix matrix_other = get_matrix();
 			if (check_multiplication_of_matrices(matrix, matrix_other)) {
-				Matrix matrix_result = multiply_matrices(matrix, matrix_other);
+				matrix = multiply_matrices(matrix, matrix_other);
 				cout << "Итоговая матрица:\n";
-				matrix_result.show();
+				matrix.show();
+				put_if_file_matrix_result(matrix);
 			}
 			else {
 				cout << "Умножение матриц не определено\n";
 			}
 		}
-		else {  // answer == 8
+		else if (answer == "8") {
+			int n = matrix.check_square();
+			if (n != -1) {
+				int** a = create_array(matrix);
+				int d = find_determinant(a, n);
+				cout << "Детерминант: " << d << "\n";
+			}
+			else {
+				cout << "Определитель существует только для квадратной матрицы\n";
+			}
+		}
+		else {  // answer == 9
 			cout << "\n";
 			break;
 		}
