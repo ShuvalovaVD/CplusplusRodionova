@@ -8,6 +8,7 @@
 #include <iomanip>
 #include <time.h>
 #include <string>
+#include <fstream>
 
 using namespace std;
 
@@ -85,24 +86,25 @@ public:
 
 	// дружественные функции, к-рые будут изменять элементы матрицы, имея доступ к массиву matrix
 	friend Matrix get_matrix();
-	friend Matrix transpone_matrix(Matrix & old_matrix);
+	friend Matrix transpone_matrix(Matrix& old_matrix);
 	// дружественные функции, к-рые имеют доступ к размерам rows и columns
-	friend bool check_addition_of_matrices(Matrix & matrix_1, Matrix & matrix_2);
-	friend bool check_multiplication_of_matrices(Matrix & matrix_1, Matrix & matrix_2);
+	friend bool check_addition_of_matrices(Matrix& matrix_1, Matrix& matrix_2);
+	friend bool check_multiplication_of_matrices(Matrix& matrix_1, Matrix& matrix_2);
 	// дружественная функция, к-рая имеет доступ к размерам rows и columns, а также к массиву matrix
-	friend Matrix multiply_matrices(Matrix & matrix_1, Matrix & matrix_2);
+	friend Matrix multiply_matrices(Matrix& matrix_1, Matrix& matrix_2);
 };
 
 
 void show_options_menu() {
 	cout << "Выберите опцию (введите номер 1-7):\n";
-	cout << "1. Умножение матрицы на число\n";
-	cout << "2. Транспонирование матрицы\n";
-	cout << "3. Проверка матрицы на симметричность\n";
-	cout << "4. Сложение двух матриц\n";
-	cout << "5. Вычитание двух матриц\n";
-	cout << "6. Умножение двух матриц\n";
-	cout << "7. Выход\n\n";
+	cout << "1. Ввод новой матрицы\n";
+	cout << "2. Умножение матрицы на число\n";
+	cout << "3. Транспонирование матрицы\n";
+	cout << "4. Проверка матрицы на симметричность\n";
+	cout << "5. Сложение двух матриц\n";
+	cout << "6. Вычитание двух матриц\n";
+	cout << "7. Умножение двух матриц\n";
+	cout << "8. Выход\n\n";
 }
 
 
@@ -114,26 +116,31 @@ Matrix get_matrix() {
 	cout << "Количество столбцов: ";
 	cin >> columns;
 	Matrix matrix = Matrix(rows, columns);  // пока сгенерируем рандомную матрицу указанных размеров
-	cout << "Сгенерировать рандомную матрицу указанных размеров (1) или задать вручную (2)? (1/2):\n";
-	int answer;
+	cout << "Сгенерировать рандомную матрицу указанных размеров (1) или считать из файла input.txt (2)? (1/2):\n";
+	string answer;
 	cin >> answer;
-	if (answer == 1) {
+	if (answer == "1") {
 		cout << "Сгенерированная матрица:\n";
 		matrix.show();
+		cout << "\n";
 		return matrix;
 	}
-	// else: заполняем матрицу указанными числами
-	cout << "Введите матрицу:\n";
+	// else: считываем из файла input.txt
+	cout << "Введите матрицу в файл input.txt и введите +: ";
+	cin >> answer;
+	cout << "\n";
+	ifstream input_file("input.txt");
 	for (int i = 0; i < rows; ++i) {
 		for (int j = 0; j < columns; ++j) {
-			cin >> matrix.matrix[i][j];
+			input_file >> matrix.matrix[i][j];
 		}
 	}
+	input_file.close();
 	return matrix;
 }
 
 
-Matrix transpone_matrix(Matrix & old_matrix) {
+Matrix transpone_matrix(Matrix& old_matrix) {
 	Matrix new_matrix = Matrix(old_matrix.columns, old_matrix.rows);  // создаем транспонированную матрицу с размерами наоборот
 	for (int i = 0; i < old_matrix.rows; ++i) {
 		for (int j = 0; j < old_matrix.columns; ++j) {
@@ -144,7 +151,7 @@ Matrix transpone_matrix(Matrix & old_matrix) {
 }
 
 
-bool check_addition_of_matrices(Matrix & matrix_1, Matrix & matrix_2) {  // проверяет возможность сложения (вычитания) матриц
+bool check_addition_of_matrices(Matrix& matrix_1, Matrix& matrix_2) {  // проверяет возможность сложения (вычитания) матриц
 	if (matrix_1.rows == matrix_2.rows && matrix_1.columns == matrix_2.columns) {
 		return true;
 	}
@@ -152,7 +159,7 @@ bool check_addition_of_matrices(Matrix & matrix_1, Matrix & matrix_2) {  // пр
 }
 
 
-bool check_multiplication_of_matrices(Matrix & matrix_1, Matrix & matrix_2) {  // проверяет возможность умножения матриц
+bool check_multiplication_of_matrices(Matrix& matrix_1, Matrix& matrix_2) {  // проверяет возможность умножения матриц
 	if (matrix_1.columns == matrix_2.rows) {
 		return true;
 	}
@@ -160,7 +167,7 @@ bool check_multiplication_of_matrices(Matrix & matrix_1, Matrix & matrix_2) {  /
 }
 
 
-Matrix multiply_matrices(Matrix & matrix_1, Matrix & matrix_2) {  // предполагается, что умножение матриц определено
+Matrix multiply_matrices(Matrix& matrix_1, Matrix& matrix_2) {  // предполагается, что умножение матриц определено
 	int rows_result, columns_result;
 	rows_result = matrix_1.rows;
 	columns_result = matrix_2.columns;
@@ -184,12 +191,15 @@ int main() {
 	srand((unsigned)time(NULL));
 
 	cout << "Программная реализация матричных операций\n\n";
+	Matrix matrix = get_matrix();
 	while (true) {
 		show_options_menu();
-		int answer;
+		string answer;
 		cin >> answer;
-		if (answer == 1) {
-			Matrix matrix = get_matrix();
+		if (answer == "1") {
+			matrix = get_matrix();
+		}
+		else if (answer == "2") {
 			cout << "Введите число: ";
 			int number;
 			cin >> number;
@@ -197,57 +207,48 @@ int main() {
 			cout << "Итоговая матрица:\n";
 			matrix.show();
 		}
-		else if (answer == 2) {
-			Matrix matrix = get_matrix();
-			Matrix transponed_matrix = transpone_matrix(matrix);
+		else if (answer == "3") {
+			matrix = transpone_matrix(matrix);
 			cout << "Транспонированная матрица:\n";
-			transponed_matrix.show();
+			matrix.show();
 		}
-		else if (answer == 3) {
-			Matrix matrix = get_matrix();
-			bool flag_verdict = matrix.check_symmetry();
-			if (flag_verdict) {
+		else if (answer == "4") {
+			if (matrix.check_symmetry()) {
 				cout << "Матрица симметрична\n";
 			}
 			else {
 				cout << "Матрица несимметрична\n";
 			}
 		}
-		else if (answer == 4) {
-			cout << "Первая матрица:\n";
-			Matrix matrix_1 = get_matrix();
-			cout << "Вторая матрица:\n";
-			Matrix matrix_2 = get_matrix();
-			if (check_addition_of_matrices(matrix_1, matrix_2)) {
-				matrix_1.add_matrix(matrix_2);
+		else if (answer == "5") {
+			cout << "Введите ещё одну матрицу:\n";
+			Matrix matrix_other = get_matrix();
+			if (check_addition_of_matrices(matrix, matrix_other)) {
+				matrix.add_matrix(matrix_other);
 				cout << "Итоговая матрица:\n";
-				matrix_1.show();
+				matrix.show();
 			}
 			else {
 				cout << "Сложение матриц не определено\n";
 			}
 		}
-		else if (answer == 5) {
-			cout << "Первая матрица:\n";
-			Matrix matrix_1 = get_matrix();
-			cout << "Вторая матрица:\n";
-			Matrix matrix_2 = get_matrix();
-			if (check_addition_of_matrices(matrix_1, matrix_2)) {
-				matrix_1.subtract_matrix(matrix_2);
+		else if (answer == "6") {
+			cout << "Введите ещё одну матрицу:\n";
+			Matrix matrix_other = get_matrix();
+			if (check_addition_of_matrices(matrix, matrix_other)) {
+				matrix.subtract_matrix(matrix_other);
 				cout << "Итоговая матрица:\n";
-				matrix_1.show();
+				matrix.show();
 			}
 			else {
 				cout << "Вычитание матриц не определено\n";
 			}
 		}
-		else if (answer == 6) {
-			cout << "Первая матрица:\n";
-			Matrix matrix_1 = get_matrix();
-			cout << "Вторая матрица:\n";
-			Matrix matrix_2 = get_matrix();
-			if (check_multiplication_of_matrices(matrix_1, matrix_2)) {
-				Matrix matrix_result = multiply_matrices(matrix_1, matrix_2);
+		else if (answer == "7") {
+			cout << "Введите ещё одну матрицу:\n";
+			Matrix matrix_other = get_matrix();
+			if (check_multiplication_of_matrices(matrix, matrix_other)) {
+				Matrix matrix_result = multiply_matrices(matrix, matrix_other);
 				cout << "Итоговая матрица:\n";
 				matrix_result.show();
 			}
@@ -255,8 +256,14 @@ int main() {
 				cout << "Умножение матриц не определено\n";
 			}
 		}
-		else {  // answer == 7
+		else {  // answer == 8
 			cout << "\n";
+			break;
+		}
+		cout << "\n";
+		cout << "Желаете продолжить? (+/-): ";
+		cin >> answer;
+		if (answer != "+") {
 			break;
 		}
 		cout << "\n";
