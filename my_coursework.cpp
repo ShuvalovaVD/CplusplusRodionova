@@ -99,7 +99,7 @@ public:
 	friend bool check_multiplication_of_matrices(Matrix& matrix_1, Matrix& matrix_2);
 	// дружественные функции, к-рые имеют доступ к размерам rows и columns, а также к массиву matrix
 	friend Matrix multiply_matrices(Matrix& matrix_1, Matrix& matrix_2);
-	friend void put_if_file_matrix_result(Matrix& matrix);
+	friend void put_in_file_matrix_result(Matrix& matrix);
 	friend int** create_array(Matrix matrix);
 };
 
@@ -150,7 +150,7 @@ Matrix get_matrix() {
 }
 
 
-void put_if_file_matrix_result(Matrix& matrix) {
+void put_in_file_matrix_result(Matrix& matrix) {
 	ofstream output_file("output.txt");
 	for (int i = 0; i < matrix.rows; ++i) {
 		for (int j = 0; j < matrix.columns; ++j) {
@@ -271,13 +271,13 @@ int main() {
 			matrix.multiply_by_number(number);
 			cout << "Итоговая матрица:\n";
 			matrix.show();
-			put_if_file_matrix_result(matrix);
+			put_in_file_matrix_result(matrix);
 		}
 		else if (answer == "3") {
 			matrix = transpone_matrix(matrix);
 			cout << "Транспонированная матрица:\n";
 			matrix.show();
-			put_if_file_matrix_result(matrix);
+			put_in_file_matrix_result(matrix);
 		}
 		else if (answer == "4") {
 			if (matrix.check_symmetry()) {
@@ -294,7 +294,7 @@ int main() {
 				matrix.add_matrix(matrix_other);
 				cout << "Итоговая матрица:\n";
 				matrix.show();
-				put_if_file_matrix_result(matrix);
+				put_in_file_matrix_result(matrix);
 			}
 			else {
 				cout << "Сложение матриц не определено\n";
@@ -307,7 +307,7 @@ int main() {
 				matrix.subtract_matrix(matrix_other);
 				cout << "Итоговая матрица:\n";
 				matrix.show();
-				put_if_file_matrix_result(matrix);
+				put_in_file_matrix_result(matrix);
 			}
 			else {
 				cout << "Вычитание матриц не определено\n";
@@ -320,7 +320,7 @@ int main() {
 				matrix = multiply_matrices(matrix, matrix_other);
 				cout << "Итоговая матрица:\n";
 				matrix.show();
-				put_if_file_matrix_result(matrix);
+				put_in_file_matrix_result(matrix);
 			}
 			else {
 				cout << "Умножение матриц не определено\n";
